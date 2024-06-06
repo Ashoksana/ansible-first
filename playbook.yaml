@@ -1,0 +1,38 @@
+- name: demo
+  hosts: web
+  become: true
+  tasks:
+   - name: install git and nginx on Debian-based systems
+     ansible.builtin.package:
+      name: "{{ item }}"
+      state: present
+     loop:
+      - git
+      - nginx
+     when: ansible_os_family == 'Debian'
+
+   - name: install git and nginx on Red Hat-based systems
+     ansible.builtin.package:
+      name: "{{ item }}"
+      state: present
+     loop:
+      - git
+      - nginx
+     when: ansible_os_family == 'RedHat'
+
+   - name: git clone in vm of ec2
+     ansible.builtin.git:
+      repo: https://github.com/Ashoksana/ansible-first.git
+      dest: /var/www/html
+
+   - name: restart nginx on Debian-based systems
+     ansible.builtin.service:
+      name: nginx
+      state: restarted
+     when: ansible_os_family == 'Debian'
+
+   - name: restart nginx on Red Hat-based systems
+     ansible.builtin.service:
+      name: nginx
+      state: restarted
+     when: ansible_os_family == 'RedHat'
